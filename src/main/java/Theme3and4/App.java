@@ -1,14 +1,19 @@
 package Theme3and4;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.github.javafaker.Faker;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Stream;
 
 public class App {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         ArrayList<Character> characters = new ArrayList<>();
         String name;
         String gameClass;
@@ -16,20 +21,28 @@ public class App {
         int attack;
         int armor;
         int money;
+        ObjectMapper jsonMapper = new JsonMapper();
         /*------------------------------------*/
-        int n = 3;
-        for (int i = 0; i < n; i++) {
-            Faker faker = new Faker();
+        if (new File("characters.json").exists()) {
+            characters = jsonMapper.readValue(new File("characters.json"), new TypeReference<ArrayList<Character>>(){});
 
-            name = faker.name().firstName();
-            gameClass = faker.job().position();
-            level = new Random().nextInt(12);
-            attack = new Random().nextInt(50) + 25;
-            armor = new Random().nextInt(10) + 5;
-            money = new Random().nextInt(2000);
-            characters.add(new Character(name, gameClass, level, attack, armor, money));
+            characters.forEach(x -> System.out.println(x.toString()));
         }
-        System.out.println(characters);
+        else {
+            int n = 3;
+            for (int i = 0; i < n; i++) {
+                Faker faker = new Faker();
+
+                name = faker.name().firstName();
+                gameClass = faker.job().position();
+                level = new Random().nextInt(12);
+                attack = new Random().nextInt(50) + 25;
+                armor = new Random().nextInt(10) + 5;
+                money = new Random().nextInt(2000);
+                characters.add(new Character(name, gameClass, level, attack, armor, money));
+            }
+            System.out.println(characters);
+        }
         /*------------------------------------*/
         Optional<Character> bestCharacter = characters.stream()
                 .max(Comparator.comparingInt(Character::getLevel));
@@ -77,5 +90,6 @@ public class App {
                 })
                 .forEach(System.out::println);
         /*------------------------------------*/
+        jsonMapper.writeValue(new File("characters.json"), characters);
     }
 }
