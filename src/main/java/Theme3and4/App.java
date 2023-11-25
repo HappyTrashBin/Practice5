@@ -7,10 +7,7 @@ import com.github.javafaker.Faker;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
-import java.util.stream.Stream;
 
 public class App {
     public static void main(String[] args) throws IOException {
